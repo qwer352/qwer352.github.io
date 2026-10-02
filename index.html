@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8edf1">
+  <meta name="description" content="个人介绍与社交主页">
+  <title>你好，很高兴认识你</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #626775;
+      --muted: #9399a4;
+      --mint: #78bda8;
+      --peach: #e3a07d;
+      --paper: rgba(255, 255, 255, .88);
+    }
+    * { box-sizing: border-box; }
+    html { min-width: 320px; min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      overflow-x: hidden;
+      padding: 40px 18px;
+      color: var(--ink);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+      background: #d9e9ec;
+    }
+    .landscape {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+    }
+    .mist {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(247, 219, 216, .58), rgba(218, 239, 240, .42) 55%, rgba(226, 230, 240, .35));
+    }
+    .sparkle {
+      position: fixed;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .8);
+      box-shadow: 0 0 18px 5px rgba(255,255,255,.32);
+      animation: drift 7s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    .sparkle.one { top: 18%; left: 16%; }
+    .sparkle.two { top: 28%; right: 18%; animation-delay: -2s; }
+    .sparkle.three { bottom: 20%; left: 24%; animation-delay: -4s; }
+    @keyframes drift { from { transform: translateY(0); opacity: .38; } to { transform: translateY(-13px); opacity: .9; } }
+
+    .profile-card {
+      width: min(100%, 392px);
+      min-height: 548px;
+      padding: 38px 38px 30px;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      text-align: center;
+      background: var(--paper);
+      border: 1px solid rgba(255,255,255,.86);
+      border-radius: 9px;
+      box-shadow: 0 22px 80px rgba(76, 91, 108, .17), 0 2px 10px rgba(255,255,255,.5) inset;
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      animation: card-in .75s cubic-bezier(.2,.75,.25,1) both;
+    }
+    @keyframes card-in { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .card-topline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 10px -38px 24px;
+      color: #c4c8cc;
+    }
+    .card-topline::before, .card-topline::after { content: ""; height: 1px; flex: 1; background: linear-gradient(90deg, transparent, rgba(174,183,190,.66)); }
+    .card-topline::after { transform: scaleX(-1); }
+    .avatar {
+      width: 86px;
+      height: 86px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #d1eee7, #e4e7fa 60%, #f8e5dd);
+      border: 4px solid rgba(255,255,255,.9);
+      box-shadow: 0 5px 18px rgba(123, 171, 166, .2);
+      color: #fff;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .avatar svg { width: 49px; height: 49px; }
+    .eyebrow {
+      margin: 15px 0 5px;
+      color: #abb0b8;
+      font: 600 10px/1.4 ui-sans-serif, system-ui, sans-serif;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(27px, 7vw, 32px);
+      line-height: 1.3;
+      letter-spacing: .08em;
+      font-weight: 650;
+      background: linear-gradient(100deg, #73bba5 5%, #93bbaa 48%, #e7a27d 96%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .subtitle { margin: 11px 0 0; color: #888e98; font-size: 14px; letter-spacing: .07em; }
+    .intro {
+      max-width: 285px;
+      margin: 23px auto 0;
+      color: #858b95;
+      font-size: 13px;
+      line-height: 2;
+      letter-spacing: .045em;
+    }
+    .quote {
+      margin: 18px auto 21px;
+      color: #a1a6af;
+      font-size: 12px;
+      line-height: 1.8;
+      letter-spacing: .04em;
+    }
+    .home-link {
+      min-height: 39px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      color: #858c94;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: .06em;
+      border: 1px solid rgba(160, 170, 178, .46);
+      border-radius: 3px;
+      transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .home-link:hover { color: #619d8d; border-color: #9bcabb; background: rgba(224, 243, 237, .43); transform: translateY(-1px); }
+    .divider { height: 1px; margin: 25px 0 22px; background: linear-gradient(90deg, transparent, rgba(174,183,190,.65), transparent); }
+    .socials { display: flex; justify-content: center; gap: 15px; }
+    .social-button {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #a1a8ae;
+      border: 1px solid rgba(164, 174, 183, .52);
+      border-radius: 50%;
+      background: rgba(255,255,255,.14);
+      cursor: pointer;
+      transition: transform .2s ease, color .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .social-button:hover { transform: translateY(-3px); color: #70b49f; border-color: #a7d4c6; background: rgba(235, 248, 243, .7); }
+    .social-button svg { width: 21px; height: 21px; fill: none; stroke: currentColor; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+    .social-button.xhs { color: #cf9994; }
+    .xhs-wordmark { font-size: 9px; font-weight: 650; letter-spacing: -.04em; }
+    .social-button.xhs:hover { color: #de7d77; border-color: #e9b9b4; background: rgba(255,239,237,.72); }
+    .social-hint { margin: 12px 0 0; color: #b0b4bb; font-size: 10px; letter-spacing: .08em; }
+    .footer-note { margin: 21px 0 0; color: #b3b7bf; font-size: 10px; letter-spacing: .08em; }
+    .footer-note span { color: #e1a58b; }
+    .tiny-bloom { position: absolute; left: 50%; bottom: -26px; width: 66px; height: 48px; transform: translateX(-50%); opacity: .55; pointer-events: none; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(72, 82, 95, .32);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+    .modal-backdrop.is-open { opacity: 1; visibility: visible; }
+    .dialog {
+      width: min(100%, 340px);
+      position: relative;
+      padding: 27px 25px 25px;
+      text-align: center;
+      color: var(--ink);
+      background: rgba(255,255,255,.96);
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 10px;
+      box-shadow: 0 20px 65px rgba(47, 57, 72, .22);
+      transform: translateY(9px);
+      transition: transform .2s ease;
+    }
+    .is-open .dialog { transform: translateY(0); }
+    .close-modal {
+      position: absolute;
+      top: 11px;
+      right: 13px;
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      color: #a5aab2;
+      background: transparent;
+      font-size: 23px;
+      cursor: pointer;
+    }
+    .close-modal:hover { background: #f1f4f4; color: #6e7880; }
+    .dialog h2 { margin: 0; color: #78ad9e; font-size: 19px; font-weight: 600; letter-spacing: .08em; }
+    .dialog p { margin: 8px 0 17px; color: #9298a1; font-size: 12px; line-height: 1.8; }
+    .qr-placeholder, .qr-image { width: 190px; height: 190px; margin: 0 auto; }
+    .qr-placeholder {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 7px;
+      color: #95a19f;
+      background: linear-gradient(145deg, #f0f8f5, #faf6f2);
+      border: 1px dashed #b7d4ca;
+      border-radius: 5px;
+    }
+    .qr-placeholder svg { width: 38px; height: 38px; fill: none; stroke: #90bcae; stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+    .qr-placeholder strong { color: #83938f; font-size: 12px; font-weight: 500; }
+    .qr-placeholder span { max-width: 145px; color: #aab1b1; font-size: 10px; line-height: 1.6; }
+    .qr-image { display: block; object-fit: contain; padding: 9px; background: white; border: 1px solid #edf0ef; border-radius: 5px; }
+    .dialog-foot { margin: 14px 0 0 !important; color: #b1b5bb !important; font-size: 10px !important; }
+    .wechat-account { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 13px 0 0; color: #9198a0; font-size: 12px; }
+    .wechat-account code { color: #69737b; font: 600 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .025em; }
+    .copy-id { padding: 4px 8px; color: #6ca391; background: #f2f8f5; border: 1px solid #c7e0d6; border-radius: 4px; font: inherit; font-size: 10px; cursor: pointer; }
+    .copy-id:hover { background: #e8f4ef; }
+    .toast {
+      position: fixed;
+      z-index: 6;
+      left: 50%;
+      bottom: 22px;
+      transform: translate(-50%, 9px);
+      padding: 9px 15px;
+      color: #fff;
+      background: rgba(75, 83, 93, .82);
+      border-radius: 20px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease, transform .18s ease;
+      white-space: nowrap;
+    }
+    .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+    @media (max-width: 480px) {
+      body { padding: 22px 14px; }
+      .profile-card { min-height: 0; padding: 30px 27px 26px; }
+      .card-topline { margin: 8px -27px 20px; }
+      .avatar { width: 78px; height: 78px; }
+      .intro { margin-top: 20px; }
+      .divider { margin-top: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <svg class="landscape" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4d9d7"/><stop offset=".48" stop-color="#dce9eb"/><stop offset="1" stop-color="#d4e4e9"/></linearGradient>
+      <linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#c9d4dd"/><stop offset="1" stop-color="#aabcc8"/></linearGradient>
+      <linearGradient id="near" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#a6b8c4"/><stop offset="1" stop-color="#7f9baa"/></linearGradient>
+      <filter id="blur"><feGaussianBlur stdDeviation="24"/></filter>
+      <radialGradient id="glow"><stop stop-color="#fff6e8" stop-opacity=".92"/><stop offset="1" stop-color="#fff6e8" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="1600" height="1000" fill="url(#sky)"/>
+    <ellipse cx="290" cy="235" rx="350" ry="210" fill="#f8e3dc" opacity=".48" filter="url(#blur)"/>
+    <ellipse cx="1320" cy="195" rx="340" ry="220" fill="#d9eef0" opacity=".68" filter="url(#blur)"/>
+    <circle cx="1100" cy="385" r="270" fill="url(#glow)" opacity=".62"/>
+    <path d="M0 706 154 582l84 80 174-262 88 147 137-111 121 215 134-300 138 238 112-107 123 139 156-229 179 260v348H0Z" fill="url(#far)" opacity=".52"/>
+    <path d="m0 812 156-222 106 137 156-304 130 223 102-94 104 245 154-374 156 291 108-168 95 113 140-235 193 261v315H0Z" fill="url(#near)" opacity=".6"/>
+    <path d="m262 727 156-304 54 92-41-17-25 36-29-9-32 45-31-10-26 47Zm646-4 150-374 59 111-39-20-27 26-26-8-27 35-32-13-25 42Zm548-45 140-235 65 89-40-11-24 23-25-9-25 36-27-13-28 40Z" fill="#f3f5f3" opacity=".36"/>
+    <path d="M0 867c227-54 352-17 524 28s339 4 506-39 376-27 570 18v126H0Z" fill="#dde8e8" opacity=".55"/>
+  </svg>
+  <div class="mist" aria-hidden="true"></div>
+  <i class="sparkle one" aria-hidden="true"></i><i class="sparkle two" aria-hidden="true"></i><i class="sparkle three" aria-hidden="true"></i>
+
+  <main class="profile-card">
+    <div class="card-topline" aria-hidden="true">
+      <div class="avatar">
+        <img src="assets/avatar.jpg" alt="胖大海小星星的头像">
+      </div>
+    </div>
+    <p class="eyebrow">A LITTLE SPACE ABOUT ME</p>
+    <h1 id="name">你的名字</h1>
+    <p class="subtitle" id="subtitle">在这里写下你的身份 / 一句话介绍</p>
+    <p class="intro" id="intro">你好，欢迎来到我的小小空间。这里可以放一段简短的自我介绍，聊聊你是谁、喜欢什么，或最近在做的事。</p>
+    <p class="quote" id="quote">“把平凡日子，过成喜欢的样子。”</p>
+    <a class="home-link" id="xhsMainLink" href="#小红书主页" aria-label="打开小红书主页">
+      去小红书看看 <span aria-hidden="true">↗</span>
+    </a>
+    <div class="divider" aria-hidden="true"></div>
+    <nav class="socials" aria-label="社交账号">
+      <button class="social-button" id="wechatButton" type="button" aria-label="添加微信" title="添加微信">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.2 4.3c-4 0-7.2 2.6-7.2 5.9 0 1.9 1.1 3.6 2.9 4.7l-.7 2.2 2.7-1.3c.7.2 1.5.4 2.3.4 4 0 7.2-2.6 7.2-5.9s-3.2-6-7.2-6Z"/><path d="M12.3 8.2c4.2 0 7.6 2.5 7.6 5.6 0 1.5-.9 2.9-2.3 3.9l.5 1.8-2.4-1.1c-.9.3-1.9.5-3 .5-4.2 0-7.6-2.5-7.6-5.5 0-2.7 2.5-5.2 5.8-5.2"/><path d="M6.5 9.3h.1m5.2 0h.1m2.9 4.2h.1m4.2 0h.1"/></svg>
+      </button>
+      <button class="social-button xhs" id="xhsButton" type="button" aria-label="访问小红书" title="小红书主页">
+        <span class="xhs-wordmark" aria-hidden="true">小红书</span>
+      </button>
+    </nav>
+    <p class="social-hint">微信扫码认识 · 小红书记录日常</p>
+    <p class="footer-note">愿每一次相遇，都有一点点 <span>✨</span></p>
+    <svg class="tiny-bloom" viewBox="0 0 66 48" aria-hidden="true"><path d="M33 50c-4-10-12-14-20-13 4-7 11-10 19-7-2-8 1-15 8-19 0 8 4 14 12 17-8 2-13 8-14 17" fill="#d7e8df"/><circle cx="36" cy="23" r="3" fill="#f0cbb9"/></svg>
+  </main>
+
+  <div class="modal-backdrop" id="wechatModal" role="presentation" aria-hidden="true">
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle" aria-describedby="dialogDescription">
+      <button class="close-modal" id="closeModal" type="button" aria-label="关闭">×</button>
+      <h2 id="dialogTitle">加我微信</h2>
+      <p id="dialogDescription">扫一扫，欢迎来和我打个招呼。</p>
+      <div id="qrSlot"></div>
+      <div class="wechat-account"><span>微信号</span><code id="wechatIdText"></code><button class="copy-id" id="copyWechatId" type="button">复制</button></div>
+      <p class="dialog-foot" id="dialogFoot">扫码添加，或复制微信号搜索我</p>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // 在这里填写个人资料。二维码图片建议放在 images/wechat-qr.png。
+    const PROFILE = {
+      name: "胖大海小星星",
+      subtitle: "Milano, Italia",
+      intro: "你好，我是一位从小在意大利土生土长的华侨，对米兰和周边的城市也非常的了解，如果您刚来到米兰需要地陪或者商务翻译的话，可以咨询我的微信哦",
+      quote: "“把平凡日子，过成喜欢的样子。”",
+      xiaohongshuUrl: "https://www.xiaohongshu.com/user/profile/5aff18304eacab42bd4bf60e?xsec_token=ABPs5X9Pcdqt1GGvpdffWgQQI3rvn77_CY0VDlLeuy2fU%3D&xsec_source=pc_search",
+      wechatQrImage: "assets/wechat-qr.jpg",
+      wechatId: "zsq20001119"
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const modal = $("#wechatModal");
+    const qrSlot = $("#qrSlot");
+    const toast = $("#toast");
+    let toastTimer;
+
+    $("#name").textContent = PROFILE.name;
+    $("#subtitle").textContent = PROFILE.subtitle;
+    $("#intro").textContent = PROFILE.intro;
+    $("#quote").textContent = PROFILE.quote;
+    document.title = `${PROFILE.name} · 个人主页`;
+
+    const qrPlaceholder = `
+      <div class="qr-placeholder" aria-label="尚未设置微信二维码">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="4" y="4" width="11" height="11" rx="1.5"/><rect x="25" y="4" width="11" height="11" rx="1.5"/><rect x="4" y="25" width="11" height="11" rx="1.5"/><path d="M8 8h3v3H8zm21 0h3v3h-3zM8 29h3v3H8zm11-9h3m4 0h3m-10 5v3m7-1h3m-7 6h3m4-4v5"/><path d="M19 15h3v3h-3zm8 7h4v4h-4z"/></svg>
+        <strong>微信二维码待添加</strong>
+        <span>把你的二维码图片放进网站后，扫一扫就能加你</span>
+      </div>`;
+    const qrImage = PROFILE.wechatQrImage
+      ? `<img class="qr-image" src="${PROFILE.wechatQrImage}" alt="微信二维码">`
+      : qrPlaceholder;
+    qrSlot.innerHTML = qrImage;
+    $("#wechatIdText").textContent = PROFILE.wechatId;
+
+    function openWechat() {
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      $("#closeModal").focus();
+    }
+    function closeWechat() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      $("#wechatButton").focus();
+    }
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2400);
+    }
+    async function copyWechatId() {
+      try {
+        await navigator.clipboard.writeText(PROFILE.wechatId);
+        showToast("微信号已复制");
+      } catch {
+        const field = document.createElement("textarea");
+        field.value = PROFILE.wechatId;
+        field.style.position = "fixed";
+        field.style.opacity = "0";
+        document.body.appendChild(field);
+        field.select();
+        document.execCommand("copy");
+        field.remove();
+        showToast("微信号已复制");
+      }
+    }
+    function openXiaohongshu() {
+      if (!PROFILE.xiaohongshuUrl) {
+        showToast("请先在 index.html 中填写你的小红书主页链接");
+        return;
+      }
+      window.open(PROFILE.xiaohongshuUrl, "_blank", "noopener,noreferrer");
+    }
+    $("#wechatButton").addEventListener("click", openWechat);
+    $("#closeModal").addEventListener("click", closeWechat);
+    modal.addEventListener("click", (event) => { if (event.target === modal) closeWechat(); });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape" && modal.classList.contains("is-open")) closeWechat(); });
+    $("#xhsButton").addEventListener("click", openXiaohongshu);
+    $("#xhsMainLink").addEventListener("click", (event) => { event.preventDefault(); openXiaohongshu(); });
+    $("#copyWechatId").addEventListener("click", copyWechatId);
+  </script>
+</body>
+</html>
